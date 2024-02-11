@@ -33,11 +33,41 @@
 
   const $map = get('#map');
   const mapContainer = new kakao.maps.Map($map, {
-    center: new kakao.maps.LatLng(33.450701, 126.570667), //지도의 중심좌표.
+    center: new kakao.maps.LatLng(37.40133360873933, 127.10801128231743), //지도의 중심좌표.
     level: 3 //지도의 레벨(확대, 축소 정도)
   })
 
-  const init = () => {}
+  const createMarkerImage = () => {
+    const markerImageSrc = 'assets/marker.png';
+    const imageSize = new kakao.maps.Size(30, 46);
+    return new kakao.maps.MarkerImage(markerImageSrc, imageSize);
+  }
 
+  const createMarker = (lat, lng) => {
+    const marker = new kakao.maps.Marker({
+      map: mapContainer,
+      position: new kakao.maps.LatLng(lat, lng),
+      image: createMarkerImage(),
+    })
+    return marker;
+  }
+
+  const createShopElement = () => {
+    shops.map(shop => {
+      const { lat, lng } = shop;
+      const marker = createMarker(lat, lng);
+      const infoWindow = new kakao.maps.InfoWindow({
+         content: `<div style="width:150px;text-align:center;padding:6px 2px;">
+                  <a href="https://place.map.kakao.com/${shop.id}" target="_blank">${shop.name}</a>
+                </div>`,
+      });
+      infoWindow.open(mapContainer, marker);
+      
+    })
+  }
+
+  const init = () => {
+    createShopElement();
+  }
   init()
 })()
