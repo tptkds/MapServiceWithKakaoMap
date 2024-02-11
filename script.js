@@ -31,6 +31,8 @@
     return document.querySelector(target)
   }
 
+  const $geoButton = get('.geolocation_button');
+
   const $map = get('#map');
   const mapContainer = new kakao.maps.Map($map, {
     center: new kakao.maps.LatLng(37.40133360873933, 127.10801128231743), //지도의 중심좌표.
@@ -66,8 +68,21 @@
     })
   }
 
+  const getMyLocation = () => {
+    navigator.geolocation.getCurrentPosition((position) => {
+      const curLat = position.coords.latitude;
+      const curLng = position.coords.longitude;
+      mapContainer.setCenter(new kakao.maps.LatLng(curLat, curLng));
+      const marker = createMarker(curLat, curLng);
+      marker.setMap(mapContainer);
+
+    })
+    
+  }
+
   const init = () => {
     createShopElement();
+    $geoButton.addEventListener('click', getMyLocation);
   }
   init()
 })()
